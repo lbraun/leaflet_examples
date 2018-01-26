@@ -1,7 +1,17 @@
 var map = L.map('map').setView([0, 0], 2);
 
 realtime = L.realtime(getCustomData, {
-  interval: 3 * 1000
+  interval: 10 * 1000,
+  onEachFeature(f, l) {
+    l.bindPopup(function() {
+      var fieldNames = ["icao24", "callsign", "origin_country", "time_position", "last_contact", "longitude", "latitude", "geo_altitude", "on_ground", "velocity", "heading", "vertical_rate", "sensors", "baro_altitude", "squawk", "spi", "position_source"];
+      var popupText = '<h3>' + f.properties[1] + ' Flight Information</h3><p>';
+      $.each(f.properties, function(index) {
+        popupText += '<strong>' + fieldNames[index] + '</strong> ' + f.properties[index] + '</br>';
+      });
+      return popupText;
+    });
+  }
 }).addTo(map);
 
 var CartoDB_PositronNoLabels = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_nolabels/{z}/{x}/{y}.png', {
@@ -47,20 +57,20 @@ function getCustomData(success, error) {
         }
       };
       feature.properties = ele;
-            //set the id
-            feature.properties["id"]=i;
+      // Set the id
+      feature.properties["id"] = i;
 
-      //check that the elements are numeric and only then insert
+      // Check that the elements are numeric and only then insert
       if (isNumeric(ele[5]) && isNumeric(ele[6])) {
-        //add this feature to the features array
+        // Add this feature to the features array
         fs.features.push(feature)
       }
     }
     //return the GeoJSON FeatureCollection
-        return fs;
+    return fs;
   }
-  function isNumeric(thumbsdown) {
-    return !isNaN(parseFloat(thumbsdown)) && isFinite(thumbsdown);
+  function isNumeric(x) {
+    return !isNaN(parseFloat(x)) && isFinite(x);
   }
 
 }
