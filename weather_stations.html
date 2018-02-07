@@ -19,7 +19,7 @@
   </head>
 
   <body>
-    <h1>Clustering Weather Stations</h1>
+    <h1>Nearby Weather Stations</h1>
     <div id="map" style="width: 700px; height: 500px;"></div>
   </body>
 
@@ -60,6 +60,12 @@
 
         $.each(stations, function (i, station) {
           var marker = L.marker(L.latLng(station.coord.lat, station.coord.lon));
+          console.log(station);
+          var popup_text = "<h2>" + station.name + "</h2><p>"
+            + "Temperature: " + station.main.temp + "ºC"
+            + "</br>Humidity: " + station.main.humidity + "%"
+            + "</br>Wind speed: " + station.wind.speed + "km/h</p>";
+          marker.bindPopup(popup_text).openPopup();
           markerList.push(marker);
         })
 
